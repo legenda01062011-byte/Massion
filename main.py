@@ -7,7 +7,7 @@ from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 import asyncio
 
-TOKEN = os.environ.get("BOT2_TOKEN")
+TOKEN = os.environ.get("BOT_TOKEN")
 DB_PATH = os.environ.get("DB_PATH", "tracker.db")
 
 router = Router()
@@ -168,7 +168,7 @@ async def toggle_callback(callback: CallbackQuery):
 # ---------------------------------------------------------------------------
 async def main():
     if not TOKEN:
-        raise RuntimeError("BOT2_TOKEN is not set. Put your Telegram bot token in the BOT_TOKEN environment variable / Secret.")
+        raise RuntimeError("BOT_TOKEN is not set. Put your Telegram bot token in the BOT_TOKEN environment variable / Secret.")
     bot = Bot(token=TOKEN)
     dp = Dispatcher()
     dp.include_router(router)
