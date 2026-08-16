@@ -1,20 +1,21 @@
 import os
 import sqlite3
 import datetime
+import asyncio
 
 from aiogram import Bot, Dispatcher, Router, F
 from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
-import asyncio
 
-TOKEN = os.environ.get("BOT_TOKEN")
+# ---------------------------------------------------------------------------
+# Уникальное имя переменной токена — TRACKER_BOT_TOKEN, чтобы не путаться
+# с BOT_TOKEN другого бота
+# ---------------------------------------------------------------------------
+TOKEN = os.environ.get("TRACKER_BOT_TOKEN")
 DB_PATH = os.environ.get("DB_PATH", "tracker.db")
 
 router = Router()
 
-# ---------------------------------------------------------------------------
-# Расписание дел по дням недели. 0 = Понедельник ... 6 = Воскресенье
-# ---------------------------------------------------------------------------
 TASKS = {
     0: [  # Понедельник
         "Отжимания — 4×10–15",
@@ -64,9 +65,6 @@ TASKS = {
 WEEKDAY_NAMES = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
 
 
-# ---------------------------------------------------------------------------
-# DATABASE
-# ---------------------------------------------------------------------------
 def db_connect():
     conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     conn.execute(
@@ -108,9 +106,6 @@ def toggle_task(user_id: int, date: str, task_idx: int):
     conn.commit()
 
 
-# ---------------------------------------------------------------------------
-# UI helpers
-# ---------------------------------------------------------------------------
 def build_day_view(user_id: int, date_str: str):
     date_obj = datetime.date.fromisoformat(date_str)
     weekday = date_obj.weekday()
@@ -131,9 +126,6 @@ def build_day_view(user_id: int, date_str: str):
     return text, InlineKeyboardMarkup(inline_keyboard=kb)
 
 
-# ---------------------------------------------------------------------------
-# Handlers
-# ---------------------------------------------------------------------------
 @router.message(Command("start", "help"))
 async def cmd_start(message: Message):
     await message.reply(
@@ -163,12 +155,9 @@ async def toggle_callback(callback: CallbackQuery):
     await callback.answer()
 
 
-# ---------------------------------------------------------------------------
-# ENTRY POINT
-# ---------------------------------------------------------------------------
 async def main():
     if not TOKEN:
-        raise RuntimeError("BOT_TOKEN is not set. Put your Telegram bot token in the BOT_TOKEN environment variable / Secret.")
+        raise RuntimeError("TRACKER_BOT_TOKEN is not set. Put your Telegram bot token in the TRACKER_BOT_TOKEN environment variable / Secret.")
     bot = Bot(token=TOKEN)
     dp = Dispatcher()
     dp.include_router(router)
