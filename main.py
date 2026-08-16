@@ -168,7 +168,7 @@ async def toggle_callback(callback: CallbackQuery):
 # ---------------------------------------------------------------------------
 async def main():
     if not TOKEN:
-        raise RuntimeError("BOT_TOKEN is not set. Put your Telegram bot token in the BOT_TOKEN environment variable / Secret.")
+        raise RuntimeError("BOT2_TOKEN is not set. Put your Telegram bot token in the BOT_TOKEN environment variable / Secret.")
     bot = Bot(token=TOKEN)
     dp = Dispatcher()
     dp.include_router(router)
